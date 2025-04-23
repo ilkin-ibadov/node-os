@@ -1,7 +1,9 @@
-import { createServer } from 'node:http';
-
+const express = require('express');
+const app = express();
 const port = 3000;
 
+// Middleware to parse JSON
+app.use(express.json());
 
 const users = [
     {
@@ -236,62 +238,38 @@ const users = [
     }
 ]
 
-const server = createServer((req, res) => {
-    const { method, url } = req;
-
-    res.setHeader('Content-Type', 'application/json');
-
-    let body = '';
-    req.on('data', chunk => {
-        body += chunk.toString();
-    });
-
-    req.on('end', () => {
-        let parsedBody;
-        try {
-            parsedBody = body ? JSON.parse(body) : {};
-        } catch {
-            parsedBody = {};
-        }
-
-        if (url.startsWith('/api/users')) {
-            switch (method) {
-                case 'GET':
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ message: 'GET request received', data: users }));
-                    break;
-
-                case 'POST':
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ message: 'POST request received', data: parsedBody }));
-                    break;
-
-                case 'PUT':
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ message: 'PUT request received', data: parsedBody }));
-                    break;
-
-                case 'PATCH':
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ message: 'PATCH request received', data: parsedBody }));
-                    break;
-
-                case 'DELETE':
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ message: 'DELETE request received' }));
-                    break;
-
-                default:
-                    res.writeHead(405);
-                    res.end(JSON.stringify({ error: 'Method not allowed' }));
-            }
-        } else {
-            res.writeHead(404);
-            res.end(JSON.stringify({ error: 'Route Not found' }));
-        }
-    });
+// GET method
+app.get('/api/users', (req, res) => {
+  res.json({ message: 'User data', data: users });
 });
 
-server.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+// POST method
+app.post('/api/users', (req, res) => {
+  const data = req.body;
+  res.json({ message: 'POST request received', data });
+});
+
+// PUT method
+app.put('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  res.json({ message: `PUT request to update users ${id}`, data });
+});
+
+// PATCH method
+app.patch('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  res.json({ message: `PATCH request to partially update users ${id}`, data });
+});
+
+// DELETE method
+app.delete('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  res.json({ message: `DELETE request to remove users ${id}` });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
