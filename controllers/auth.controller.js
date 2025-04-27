@@ -59,7 +59,7 @@ export const refreshToken = async (req, res) => {
             return res.status(403).json({ success: false, message: "Invalid refresh token" });
         }
 
-        const newAccessToken = jwt.sign({ id: user._id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const newAccessToken = jwt.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
         res.cookie('accessToken', newAccessToken, {
             maxAge: 15 * 60 * 1000, // 15 minutes
             httpOnly: true,
