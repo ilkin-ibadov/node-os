@@ -1,138 +1,106 @@
 import fs from 'fs';
 
-// READ METHODS
+// fs.readFile('./test.txt', 'utf8', (err, data) => {
+//     if (err) {
+//         console.error('Error reading file:', err);
+//         return
+//     }
 
-// Read a file asynchronously
-fs.readFile("./test.txt", "utf-8", (err, data) => {
-    if (err) {
-        console.error("Error reading file:", err);
-        return;
-    }
-    console.log("File content:", data);
-})
+//     // console.log('File content:', data);
+// })
 
-// Synchronous method, blocking, istifade etmirik
-const fileContents = fs.readFileSync("./test.txt", "utf-8", (err, data) => {
-    if (err) {
-        console.error("Error reading file:", err);
-        return;
-    }
+// const fileContents = fs.readFileSync('./test.txt', 'utf8', (err, data) => {
+//     if (err) {
+//         console.error('Error reading file:', err);
+//         return
+//     }
 
-    return data
-})
+//     return data
+// })
 
-console.log(fileContents)
+// console.log(fileContents)
+
+const data = "\n4345354454 54353435435"
 
 
-// WRITE METHODS
+// fs.writeFile('./new.txt', data, (err) => {
+//     if (err){
+//         console.error('Error writing file:', err);
+//         return
+//     }
 
-const data = "Hello, this is a test write operation!";
+//     console.log("File written successfully");
+// })
 
-// Write to a file asynchronously, creating the file if it doesn't exist
-fs.writeFile("./writeDemo.txt", data, (err) => {
-    if (err) {
-        console.error("Error writing to file:", err);
-        return;
-    }
+// fs.appendFile('./test.txt', data, (err) => {
+//     if (err){
+//         console.error('Error appending file:', err);
+//         return
+//     }
 
-    console.log("File written successfully!");
-})
+//     console.log("File appended successfully");
+// }
+// )
 
-// Synchronous method, blocking, istifade etmirik
-fs.writeFileSync("./writeDemo.txt", data, (err) => {
-    if (err) {
-        console.error("Error writing to file:", err);
-        return;
-    }
+const fileExists = fs.existsSync('./test.txt', (err) => err ? false : true)
 
-    console.log("File written successfully!");
-} )
+// fs.unlink('./new.txt', (err) => {
+//     if (err) {
+//         console.error('Error deleting file:', err);
+//         return
+//     }
 
-// Append to a file asynchronously
-fs.appendFile("./writeDemo.txt", "\nHello, this is a test append operation!", (err) => {
-    if (err) {
-        console.error("Error appending to file:", err);
-        return;
-    }
+//     console.log("File deleted successfully");
+// }
+// )
 
-    console.log("File appended successfully!");
+// fs.mkdir('./newDir', (err) => {
+//     if (err) {
+//         console.error('Error creating directory:', err);
+//         return
+//     }
+
+//     console.log("Directory created successfully");
+// }
+// )
+
+// fs.rmdir('./newDir', (err) => {
+//     if (err) {
+//         console.error('Error deleting directory:', err);
+//         return
+//     }
+
+//     console.log("Directory deleted successfully");
+// }
+// )
+
+// fs.rename('./test.txt', './edited.txt', (err) => {
+//     if (err) {
+//         console.error('Error renaming file:', err);
+//         return
+//     }
+
+//     console.log("File renamed successfully");
+// }
+// )
+
+// fs.readFile('./edited.txt', 'utf8', (err, data) => {
+//     if (err) {
+//         console.error('Error reading file:', err);
+//         return
+//     }
+
+//     fs.writeFile('./copy.txt', data, (err) => {
+//         if (err) {
+//             console.error('Error writing file:', err);
+//             return
+//         }
+
+//         console.log("File written successfully");
+//     })
+// })
+
+fs.watch('./edited.txt', (eventType, filename) => {
+    console.log(eventType)
 }
 )
-
-// Create a new directory
-fs.mkdir("./testDir", (err) => {
-    if (err) {
-        console.error("Error creating directory:", err);
-        return;
-    }
-
-    console.log("Directory created successfully!");
-}
-)
-
-// Removes existing directory
-fs.rmdir("./testDir", (err) => {
-    if (err) {
-        console.error("Error removing directory:", err);
-        return;
-    }
-
-    console.log("Directory removed successfully!");
-}
-)
-
-// Delete a file
-fs.unlink("./deleteDemo.txt", (err) => {
-    if (err) {
-        console.error("Error deleting file:", err);
-        return;
-    }
-
-    console.log("File deleted successfully!");
-}
-)
-
-// Rename a file
-fs.rename("./renameDemo.txt", "./renameDemo2.txt", (err) => {
-    if (err) {
-        console.error("Error renaming file:", err);
-        return;
-    }
-    console.log("File renamed successfully!");
-})
-
-// Copy a file
-fs.readFile("./test.txt", "utf-8", (err, data) => {
-    if (err) {
-        console.error("Error reading file:", err);
-        return;
-    }
-
-
-    fs.writeFile("./writeDemo.txt", data, (err) => {
-        if (err) {
-            console.error("Error writing to file:", err);
-            return;
-        }
-
-        console.log("File written successfully!");
-    })
-})
-
-
-// Check if a file exists
-const fileExists = fs.existsSync("./test.txt", (err) => {
-    if (err) {
-        console.error("Error checking file existence:", err);
-        return false
-    }
-
-    return true
-}
-)
-
-if(fileExists) {
-   // append
-}{
-    // write
-}
