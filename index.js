@@ -1,6 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import os from 'os'
+import cluster from 'cluster'
 
 import cookieParser from 'cookie-parser'
 import path from 'path';
@@ -14,7 +16,7 @@ import authRoutes from './routes/auth.route.js'
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
 
-console.log(__dirname)
+const coreNum = os.cpus().length
 
 dotenv.config()
 
@@ -28,8 +30,21 @@ app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/todos", todoRoutes)
 
-// Start the server
-app.listen(process.env.PORT, () => {
-    console.log(`Server running on http://localhost:${process.env.PORT}`);
-    dbMethods.connectDB()
-});
+if (cluster.isPrimary) {
+    for (let i = 0; i < coreNum; i++) {
+        cluster.fork()
+    }
+
+    cluster.on('exit', (worker) => {
+        console.log(`Worker with pid: ${worker.process.pid} stopped`)
+
+        cluster.fork()
+    })
+} else {
+    // Start the server
+    app.listen(process.env.PORT, () => {
+        console.log(`Server running on http://localhost:${process.env.PORT}`);
+        dbMethods.connectDB()
+    });
+}
+

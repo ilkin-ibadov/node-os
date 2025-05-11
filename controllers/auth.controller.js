@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../utils/generateTokens.js";
+import { emitter } from "../authEvents.js";
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -18,6 +19,8 @@ export const login = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user, res);
+
+    emitter.emit("logIn", email)
 
     res.json({ accessToken, refreshToken });
 }
@@ -38,12 +41,16 @@ export const register = async (req, res) => {
 
     const { accessToken, refreshToken } = generateTokens(newUser, res)
 
+    emitter.emit("register", email)
+
     res.status(201).json({ success: true, message: "User registered successfully", accessToken, refreshToken });
 }
 
 export const logout = async (req, res) => {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
+
+    emitter.emit("logOut", email)
     res.status(200).json({ success: true, message: "Logged out successfully" });
 }
 
